@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TikTok UI Assessment",
+  title: "SocialHub",
   description: "Next.js App Router Technical Evaluation",
 };
 
