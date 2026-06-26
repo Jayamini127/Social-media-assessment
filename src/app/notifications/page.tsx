@@ -1,3 +1,150 @@
+"use client";
+
+import { useState } from "react";
+import { mockNotifications, NotificationItem } from "../../data/notifications";
+import Card from "@/components/Card";
+import { Heart, MessageCircle, UserPlus, AtSign, Check, Bell } from "lucide-react";
+
 export default function NotificationsPage() {
-  return <h1>Notifications Page</h1>;
+  const [notifications, setNotifications] = useState<NotificationItem[]>(mockNotifications);
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+
+  const filters = ["All", "Likes", "Comments", "Follows", "Mentions"];
+
+  const filteredNotifications = notifications.filter((notif) => {
+    if (activeFilter === "All") return true;
+    if (activeFilter === "Likes") return notif.type === "like";
+    if (activeFilter === "Comments") return notif.type === "comment";
+    if (activeFilter === "Follows") return notif.type === "follow";
+    if (activeFilter === "Mentions") return notif.type === "mention";
+    return true;
+  });
+
+  const markAsRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((notif) => (notif.id === id ? { ...notif, isRead: true } : notif))
+    );
+  };
+
+  const markAllAsRead = () => {
+    setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case "like":
+        return <Heart className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />;
+      case "comment":
+        return <MessageCircle className="w-3.5 h-3.5 fill-purple-500 text-purple-500" />;
+      case "follow":
+        return <UserPlus className="w-3.5 h-3.5 text-blue-500" />;
+      case "mention":
+        return <AtSign className="w-3.5 h-3.5 text-emerald-500" />;
+      default:
+        return <Bell className="w-3.5 h-3.5 text-slate-400" />;
+    }
+  };
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  return (
+    <div className="max-w-xl mx-auto py-6 px-4 space-y-4">
+      
+      {/* Fixed Alignment Header */}
+      <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm w-full">
+        <div className="flex items-center gap-2.5">
+          <div className="relative">
+            <Bell className="w-5 h-5 text-slate-800 dark:text-slate-200" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-purple-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                {unreadCount}
+              </span>
+            )}
+          </div>
+          <h1 className="text-lg font-bold text-slate-900 dark:text-slate-50">Notifications</h1>
+        </div>
+        
+        {unreadCount > 0 && (
+          <button 
+            onClick={markAllAsRead}
+            className="flex items-center gap-1.5 text-xs font-semibold text-purple-400 hover:opacity-80 transition-opacity"
+          >
+            <Check className="w-3.5 h-3.5" />
+            Mark all as read
+          </button>
+        )}
+      </div>
+
+      {/* Added Vertical Padding Spacing to Filter Row */}
+      <div className="flex items-center gap-2 overflow-x-auto py-1 w-full scrollbar-none">
+        {filters.map((filter) => {
+          const isSelected = activeFilter === filter;
+          return (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-4 py-1.5 text-xs font-medium rounded-full border whitespace-nowrap transition-all duration-150 ${
+                isSelected
+                  ? "bg-purple-600 text-white border-purple-600 shadow-sm"
+                  : "bg-white dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-800/40"
+              }`}
+            >
+              {filter}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Dynamic List with Interactive Unread State Toggles */}
+      {filteredNotifications.length > 0 ? (
+        <div className="space-y-3 w-full">
+          {filteredNotifications.map((notif) => (
+            <div 
+              key={notif.id}
+              onClick={() => markAsRead(notif.id)}
+              className="w-full text-left transition-opacity duration-200"
+              style={{ opacity: notif.isRead ? 0.7 : 1 }}
+            >
+              <Card>
+                <div className="flex items-start gap-3 relative pr-6">
+                  
+                  <div className="relative flex-shrink-0">
+                    <img src={notif.user.avatarUrl} alt={notif.user.name} className="w-10 h-10 rounded-full object-cover" />
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center shadow-sm">
+                      {getNotificationIcon(notif.type)}
+                    </div>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-slate-200 leading-snug">
+                      <span className="font-bold text-slate-50 mr-1">{notif.user.name}</span>
+                      <span className="text-slate-400 text-xs">@{notif.user.username}</span>
+                    </p>
+                    <p className="text-sm text-slate-300 mt-0.5 break-words">
+                      {notif.details}
+                    </p>
+                    <span className="block text-[10px] text-slate-500 font-medium mt-1">
+                      {notif.timestamp}
+                    </span>
+                  </div>
+
+                  {/* FIXED ENHANCEMENT: Live Interactive Unread Dot */}
+                  {!notif.isRead && (
+                    <div className="absolute top-1/2 right-1 -translate-y-1/2 flex-shrink-0">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full shadow-sm shadow-purple-500/50" />
+                    </div>
+                  )}
+
+                </div>
+              </Card>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 bg-slate-900 rounded-2xl border border-dashed border-slate-800 p-6 w-full">
+          <h3 className="text-sm font-semibold text-slate-100">No notifications found</h3>
+        </div>
+      )}
+    </div>
+  );
 }
