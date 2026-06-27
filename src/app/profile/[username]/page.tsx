@@ -1,36 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { mockUsers } from "../../data/users";
-import { usePosts } from "@/hooks/usePosts"; // Linked to shared sync hooks
+import { useState, useEffect, use } from "react";
+import { mockUsers } from "../../../data/users";
+import { mockPosts as initialPosts } from "../../../data/posts";
 import TabSwitcher from "@/components/TabSwitcher";
 import Card from "@/components/Card";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import { Bookmark, Heart, MessageCircle } from "lucide-react";
 
-export default function ProfilePage() {
-  const currentUser = {
-    id: "2",
+interface ProfilePageProps {
+  params: Promise<{ username: string }>;
+}
+
+export default function ProfilePage({ params }: ProfilePageProps) {
+  // Safe unpacking of URL params following Next.js standards
+  const resolvedParams = use(params);
+
+  // 👤 The logged-in session user details
+  const loggedInUser = {
     username: "sophi_brown",
-    name: "Sophia Brown",
-    avatarUrl: "avatar1.jpeg",
-    bio: "Building responsive UI experiences | Next.js enthusiast 🚀",
-    followersCount: 12500,
-    followingCount: 348,
-    likesCount: 89200
   };
 
-  const { posts, toggleLikePost, toggleSavePost } = usePosts(); // Get globally shared hooks
+  // Match user dynamically from data array based on the username parameter in the URL
+  const currentUser = mockUsers.find(
+    (u) => u.username.toLowerCase() === resolvedParams.username.toLowerCase()
+  ) || mockUsers[0];
+
+  // ✅ PRIVACY CHECK: Is the logged-in user viewing their own profile page?
+  const isOwner = loggedInUser.username.toLowerCase() === currentUser.username.toLowerCase();
+
+  const [posts, setPosts] = useState(initialPosts);
   const [activeTab, setActiveTab] = useState("Posts");
   const [isTabLoading, setIsTabLoading] = useState(false);
-  const tabs = ["Posts", "Saved"];
+
+  // ✅ DYNAMIC TABS: Hide "Saved" tab unless you are looking at your own profile
+  const tabs = isOwner ? ["Posts", "Saved"] : ["Posts"];
+
+  // Page initialization loading state variable
   const [isLoading, setIsLoading] = useState(true);
 
+  // Automatically reset the active tab back to public Posts if switching between users
   useEffect(() => {
+    setActiveTab("Posts");
+  }, [resolvedParams.username]);
+
+  // Simulate an asset network loading timeline safely on initial page mount
+  useEffect(() => {
+    setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
-  }, []);
+  }, [resolvedParams.username]);
 
+  // Re-trigger brief skeleton flicker feedback whenever user toggles active tabs
   useEffect(() => {
     if (!isLoading) {
       setIsTabLoading(true);
@@ -39,19 +60,32 @@ export default function ProfilePage() {
     }
   }, [activeTab, isLoading]);
 
+  // ✅ PRIVACY FILTERING
   const displayedPosts = posts.filter((post) => {
     if (activeTab === "Posts") {
-      return post.username === currentUser.username || post.userId === currentUser.id;
+      return post.username.toLowerCase() === currentUser.username.toLowerCase();
     } else {
-      return post.isSaved;
+      // Security fallback: never show saved items to a non-owner visitor
+      return isOwner && post.isSaved;
     }
   });
 
-  // ✅ Helper function to dynamically enforce correct avatars for both Sophia and Emma on all tabs
-  const getCleanAvatar = (post: any) => {
-    if (post.username === "sophi_brown") return currentUser.avatarUrl;
-    if (post.username === "emma_w") return "/avatar2.jpg";
-    return post.avatar || post.avatarUrl;
+  const handleLike = (id: string) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === id
+          ? { ...post, isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1 }
+          : post
+      )
+    );
+  };
+
+  const handleSaveToggle = (id: string) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === id ? { ...post, isSaved: !post.isSaved } : post
+      )
+    );
   };
 
   return (
@@ -62,10 +96,10 @@ export default function ProfilePage() {
         {isLoading ? (
           <div className="w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
         ) : (
-          <img
-            src={currentUser.avatarUrl}
-            alt={currentUser.name}
-            className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-500/30"
+          <img 
+            src={currentUser.avatarUrl} 
+            alt={currentUser.name} 
+            className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-500/30" 
           />
         )}
         
@@ -111,8 +145,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Tab Switcher */}
-      <TabSwitcher tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* Tab Switcher - Only renders if there is more than 1 tab to switch to */}
+      {tabs.length > 1 && (
+        <TabSwitcher tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+      )}
 
       {/* Dynamic Tab Content Feed Display */}
       {isLoading || isTabLoading ? (
@@ -121,24 +157,15 @@ export default function ProfilePage() {
         </div>
       ) : displayedPosts.length > 0 ? (
         <div className="space-y-4">
-          {displayedPosts.map((post: any) => (
+          {displayedPosts.map((post) => (
             <Card key={post.id}>
-              {/* Top Row Feed Header Details Block */}
               <div className="flex items-center gap-3 mb-3">
-                <img
-                  // ✅ FIXED: Safely overrides old avatar references layout-wide for any active view tab items
-                  src={getCleanAvatar(post)}
-                  alt={post.username}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/10"
+                <img 
+                  src={post.avatarUrl} 
+                  alt={post.username} 
+                  className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/10" 
                 />
-                <div className="flex flex-col text-left">
-                  <span className="font-bold text-sm text-slate-900 dark:text-slate-100 hover:underline cursor-pointer block">
-                    {post.name || (post.username === "sophi_brown" ? "Sophia Brown" : "Creator")}
-                  </span>
-                  <span className="text-xs text-slate-400 dark:text-slate-500 block">
-                    @{post.username}
-                  </span>
-                </div>
+                <span className="font-semibold text-sm">@{post.username}</span>
               </div>
 
               <p className="text-sm text-slate-800 dark:text-slate-200 mb-4">{post.caption}</p>
@@ -155,18 +182,19 @@ export default function ProfilePage() {
 
               <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3 text-slate-500">
                 <div className="flex items-center gap-6">
-                  <button onClick={() => toggleLikePost(post.id)} className="flex items-center gap-2 text-sm font-medium group">
+                  <button onClick={() => handleLike(post.id)} className="flex items-center gap-2 text-sm font-medium group">
                     <Heart className={`w-5 h-5 transition-transform group-active:scale-125 ${post.isLiked ? "fill-orange-500 text-orange-500" : "hover:text-orange-500"}`} />
                     <span className={post.isLiked ? "text-orange-500 font-bold" : ""}>{post.likes}</span>
                   </button>
 
                   <div className="flex items-center gap-2 text-sm font-medium">
                     <MessageCircle className="w-5 h-5" />
-                    <span>{post.comments ?? post.commentsCount ?? 0}</span>
+                    <span>{post.commentsCount}</span>
                   </div>
                 </div>
 
-                <button onClick={() => toggleSavePost(post.id)} className="flex items-center gap-2 text-sm font-medium group pr-2">
+                {/* Optional: Only allow bookmark UI clicking adjustments if viewing your own posts space */}
+                <button onClick={() => handleSaveToggle(post.id)} className="flex items-center gap-2 text-sm font-medium group pr-2">
                   <Bookmark className={`w-5 h-5 transition-transform group-active:scale-125 ${post.isSaved ? "fill-purple-600 text-purple-600" : "hover:text-purple-600"}`} />
                   <span className={post.isSaved ? "text-purple-600 font-semibold" : ""}>
                     {post.isSaved ? "Saved" : "Save"}
@@ -181,9 +209,13 @@ export default function ProfilePage() {
           <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
             <Bookmark className="w-6 h-6 text-slate-400" />
           </div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">No saved items yet</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {activeTab === "Posts" ? "No posts yet" : "No saved items yet"}
+          </h3>
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-xs mx-auto">
-            Toggle the save button on your posts to add or remove them from this tab view.
+            {activeTab === "Posts" 
+              ? "This user hasn't shared any content publicly yet." 
+              : "Toggle the save button on your posts to add or remove them from this tab view."}
           </p>
         </div>
       )}
