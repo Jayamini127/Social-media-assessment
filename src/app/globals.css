@@ -2,27 +2,100 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Purple & Orange brand palette — light mode */
+  --background: #faf8ff;
+  --foreground: #1a1033;
+
+  --surface-card: #ffffff;
+  --surface-elevated: #f3eeff;
+
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --primary-light: #ede9fe;
+  --primary-foreground: #ffffff;
+
+  --accent: #f97316;
+  --accent-hover: #ea580c;
+  --accent-light: #fff7ed;
+  --accent-foreground: #ffffff;
+
+  --muted: #6b7280;
+  --muted-bg: #f5f0ff;
+
+  --border: #e2d9f3;
+  --border-strong: #c4b5fd;
+
+  --success: #059669;
+  --danger: #dc2626;
 }
 
-/* 💡 CHANGE THIS: Map your dark mode variables to your new custom .dark class instead of system media queries! */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  /* Purple & Orange brand palette — dark mode */
+  --background: #0f0a1e;
+  --foreground: #ede9fe;
+
+  --surface-card: #1a1033;
+  --surface-elevated: #231542;
+
+  --primary: #a855f7;
+  --primary-hover: #9333ea;
+  --primary-light: #2e1065;
+  --primary-foreground: #ffffff;
+
+  --accent: #fb923c;
+  --accent-hover: #f97316;
+  --accent-light: #431407;
+  --accent-foreground: #ffffff;
+
+  --muted: #9ca3af;
+  --muted-bg: #1e1235;
+
+  --border: #2d1f4e;
+  --border-strong: #5b21b6;
+
+  --success: #10b981;
+  --danger: #f87171;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-light: var(--accent-light);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-muted: var(--muted);
+  --color-muted-bg: var(--muted-bg);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  /* This will now seamlessly flip based on your state button switch! */
-  background: var(--color-background); 
-  color: var(--color-foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  transition: background-color 0.2s ease, color 0.2s ease; /* Optional: smooth fade transition */
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar styling to match theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--muted-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
