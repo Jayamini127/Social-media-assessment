@@ -9,14 +9,23 @@ export default function MessagesPage() {
   // Main reactive state array managing chat threads locally
   const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
   
-  // Track currently active selected chat channel
-  const [activeChatId, setActiveChatId] = useState<string>("chat_1");
+  // FIXED ISSUE 1: Default to empty string so it doesn't automatically open Emma's chat ("chat_1") every single time
+  const [activeChatId, setActiveChatId] = useState<string>("");
   
   // Input tracking state field for current keystrokes
   const [inputMessage, setInputMessage] = useState("");
 
+  // Loading state tracking variable for skeleton animation triggers
+  const [isLoading, setIsLoading] = useState(true);
+
   // Reference hooks to automatically scroll the chat container smoothly
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Simulate an asset network loading timeline safely on initial paint
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const activeChat = conversations.find((c) => c.id === activeChatId);
 
@@ -25,15 +34,23 @@ export default function MessagesPage() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [activeChat?.messages]);
+    if (!isLoading) {
+      scrollToBottom();
+    }
+  }, [activeChat?.messages, isLoading]);
+
+  // FIXED ISSUE 2: Automatically clear unread counts when activeChatId changes (handles initial mounts safely)
+  useEffect(() => {
+    if (activeChatId) {
+      setConversations((prev) =>
+        prev.map((c) => (c.id === activeChatId ? { ...c, unreadCount: 0 } : c))
+      );
+    }
+  }, [activeChatId]);
 
   // Clears out target unread badge notifications immediately upon activating a thread selection trigger
   const handleSelectChat = (id: string) => {
     setActiveChatId(id);
-    setConversations((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, unreadCount: 0 } : c))
-    );
   };
 
   // Live dynamic context delivery action trigger injection
@@ -43,7 +60,7 @@ export default function MessagesPage() {
 
     const newMsg: Message = {
       id: `msg_${Date.now()}`,
-      senderId: "1", // Hardcoded '1' represents you (Alex)
+      senderId: "1", // Hardcoded '1' represents you
       text: inputMessage.trim(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
@@ -53,6 +70,8 @@ export default function MessagesPage() {
         if (chat.id === activeChatId) {
           return {
             ...chat,
+            // FIXED ISSUE 3: Retain existing fields explicitly (like chat.user) so the header row profile metadata does not disappear!
+            unreadCount: 0, 
             lastMessage: newMsg.text,
             messages: [...chat.messages, newMsg],
           };
@@ -78,45 +97,64 @@ export default function MessagesPage() {
           </div>
 
           <div className="flex-1 overflow-y-auto divide-y divide-slate-50 dark:divide-slate-800/40">
-            {conversations.map((chat) => {
-              const isSelected = chat.id === activeChatId;
-              return (
-                <button
-                  key={chat.id}
-                  onClick={() => handleSelectChat(chat.id)}
-                  className={`w-full text-left p-4 flex items-center gap-3 transition-colors ${
-                    isSelected 
-                      ? "bg-purple-500/10 dark:bg-purple-500/5 border-l-4 border-purple-500" 
-                      : "hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-transparent"
-                  }`}
-                >
-                  <div className="relative flex-shrink-0">
-                    <img src={chat.user.avatarUrl} alt={chat.user.name} className="w-12 h-12 rounded-full object-cover" />
-                    {chat.user.isOnline && (
-                      <Circle className="w-3.5 h-3.5 fill-green-500 text-white dark:text-slate-900 absolute bottom-0 right-0" />
-                    )}
+            {isLoading ? (
+              /* Simulated List Skeletons syncing perfectly to original container padding lines */
+              [1, 2, 3, 4].map((idx) => (
+                <div key={idx} className="p-4 flex items-center gap-3 animate-pulse">
+                  <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex-shrink-0" />
+                  <div className="flex-1 space-y-2 min-w-0">
+                    <div className="h-3.5 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+                    <div className="h-3 w-5/6 bg-slate-200 dark:bg-slate-800 rounded" />
                   </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{chat.user.name}</span>
-                      {chat.unreadCount > 0 && (
-                        <span className="bg-purple-600 text-white text-[10px] px-1.5 py-0.5 font-bold rounded-full">{chat.unreadCount}</span>
+                </div>
+              ))
+            ) : (
+              conversations.map((chat) => {
+                const isSelected = chat.id === activeChatId;
+                return (
+                  <button
+                    key={chat.id}
+                    onClick={() => handleSelectChat(chat.id)}
+                    className={`w-full text-left p-4 flex items-center gap-3 transition-colors ${
+                      isSelected 
+                        ? "bg-purple-500/10 dark:bg-purple-500/5 border-l-4 border-purple-500" 
+                        : "hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-transparent"
+                    }`}
+                  >
+                    <div className="relative flex-shrink-0">
+                      <img src={chat.user.avatarUrl} alt={chat.user.name} className="w-12 h-12 rounded-full object-cover" />
+                      {chat.user.isOnline && (
+                        <Circle className="w-3.5 h-3.5 fill-green-500 text-white dark:text-slate-900 absolute bottom-0 right-0" />
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 truncate mt-0.5">{chat.lastMessage}</p>
-                  </div>
-                </button>
-              );
-            })}
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{chat.user.name}</span>
+                        {chat.unreadCount > 0 && (
+                          <span className="bg-purple-600 text-white text-[10px] px-1.5 py-0.5 font-bold rounded-full">{chat.unreadCount}</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-400 truncate mt-0.5">{chat.lastMessage}</p>
+                    </div>
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
 
         {/* 2. RIGHT COLUMN BOX: ACTIVE LIVE CHAT DIALOG FRAME VIEW */}
         <div className={`col-span-1 md:col-span-8 flex flex-col h-full bg-slate-50/50 dark:bg-slate-950/20 ${!activeChatId ? "hidden md:flex" : "flex"}`}>
-          {activeChat ? (
+          {isLoading ? (
+            /* Main Content Window Panel Dummy Placeholder Box */
+            <div className="flex-1 flex flex-col p-4 space-y-4 animate-pulse">
+              <div className="h-14 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl" />
+              <div className="flex-1 bg-white/40 dark:bg-slate-900/40 rounded-xl" />
+            </div>
+          ) : activeChat ? (
             <>
-              {/* FIXED ENHANCEMENT 1: Active Chat Window Top Header Bar */}
+              {/* Active Chat Window Top Header Bar */}
               <div className="p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm z-10">
                 <div className="flex items-center gap-3">
                   <button 
@@ -166,14 +204,14 @@ export default function MessagesPage() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* FIXED ENHANCEMENT 2: Real-time Message Input Panel Bar with Padding Separator */}
+              {/* Real-time Message Input Panel Bar with Padding Separator */}
               <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
                   <input
                     type="text"
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder="Type a secure response message..."
+                    placeholder="Type message..."
                     className="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-slate-900 dark:text-slate-100 placeholder-slate-400"
                   />
                   <button
