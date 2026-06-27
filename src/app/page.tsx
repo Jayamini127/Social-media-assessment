@@ -1,253 +1,134 @@
 "use client";
 
-
-
-import { useState } from "react";
-
-import { mockPosts as initialPosts } from "../data/posts";
-
+import { useState, useEffect } from "react";
+import { usePosts } from "@/hooks/usePosts"; 
 import { Heart, Bookmark, Share2, MessageCircle } from "lucide-react";
-
-
+import SkeletonLoader from "@/components/SkeletonLoader";
+import toast from "react-hot-toast";
 
 export default function Home() {
+  const { posts, toggleLikePost, toggleSavePost } = usePosts(); 
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [posts, setPosts] = useState(initialPosts);
-
-
-
-  const handleLike = (id: string) => {
-
-    setPosts((prevPosts) =>
-
-      prevPosts.map((post) =>
-
-        post.id === id
-
-          ? {
-
-              ...post,
-
-              isLiked: !post.isLiked,
-
-              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
-
-            }
-
-          : post
-
-      )
-
-    );
-
-  };
-
-
-
-  const handleSave = (id: string) => {
-
-    setPosts((prevPosts) =>
-
-      prevPosts.map((post) =>
-
-        post.id === id ? { ...post, isSaved: !post.isSaved } : post
-
-      )
-
-    );
-
-  };
-
-
+  // Simulate asset fetching timeline safely
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleShare = (username: string) => {
-
-    alert(`Link copied! Share ${username}'s post with your friends.`);
-
+    toast.success(`Link copied! Share ${username}'s post with your friends.`);
   };
 
+  const handleSaveToggle = (id: string, currentlySaved: boolean) => {
+    toggleSavePost(id);
+    toast.success(currentlySaved ? "Post unsaved" : "Post saved!");
+  };
 
+  const handleLikeToggle = (id: string, currentlyLiked: boolean) => {
+    toggleLikePost(id);
+    if (!currentlyLiked) {
+      toast.success("Post liked!");
+    }
+  };
 
   return (
-
     <div className="max-w-lg mx-auto py-6 space-y-6">
-
-      {posts.map((post) => (
-
-        <div
-
-          key={post.id}
-
-          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm"
-
-        >
-
-          {/* Top Header Row: User Info */}
-
-          <div className="flex items-center gap-3 mb-3">
-
-            <img
-
-              src={post.avatarUrl}
-
-              alt={post.username}
-
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/20"
-
-            />
-
-            <div>
-
-              <span className="font-semibold text-sm hover:underline cursor-pointer block">
-
-                @{post.username}
-
-              </span>
-
+      {isLoading ? (
+        <>
+          <SkeletonLoader />
+          <SkeletonLoader />
+        </>
+      ) : (
+        posts.map((post: any) => (
+          <div
+            key={post.id}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm"
+          >
+            {/* Top Header Row: User Info */}
+            <div className="flex items-center gap-3 mb-3">
+              <img
+                src={post.avatarUrl}
+                alt={post.username}
+                className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/20"
+              />
+              <div className="flex flex-col text-left">
+                <span className="font-bold text-sm text-slate-900 dark:text-slate-100 hover:underline cursor-pointer block">
+                  {post.name || (post.username === "sophi_brown" ? "Sophia Brown" : "Emma Wilson")}
+                </span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 block">
+                  @{post.username}
+                </span>
+              </div>
             </div>
 
-          </div>
+            {/* Body Caption */}
+            <p className="text-sm text-slate-800 dark:text-slate-200 mb-4 whitespace-pre-wrap">
+              {post.caption}
+            </p>
 
-
-
-          {/* Body Caption */}
-
-          <p className="text-sm text-slate-800 dark:text-slate-200 mb-4 whitespace-pre-wrap">
-
-            {post.caption}
-
-          </p>
-
-
-
-          {/* Simulated Media/Placeholder Element */}
-
-          <div className="w-full h-72 bg-gradient-to-br from-purple-100 to-orange-50 dark:from-slate-800 dark:to-slate-800/40 rounded-xl mb-4 flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700">
-
-            <span className="text-xs font-semibold tracking-wider text-purple-600 dark:text-orange-400 uppercase">
-
-              [ Media Content Feed Display Container ]
-
-            </span>
-
-            <span className="text-[11px] text-slate-400 mt-1">
-
-              (No video playback required per specifications)
-
-            </span>
-
-          </div>
-
-
-
-          {/* Dynamic Interactive Action Buttons */}
-
-          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3 text-slate-500 dark:text-slate-400">
-
-            {/* Like Button Trigger */}
-
-            <button
-
-              onClick={() => handleLike(post.id)}
-
-              className={`flex items-center gap-2 text-sm font-medium transition-colors p-1 group`}
-
-            >
-
-              <Heart
-
-                className={`w-5 h-5 transition-transform group-active:scale-125 ${
-
-                  post.isLiked
-
-                    ? "fill-orange-500 text-orange-500"
-
-                    : "hover:text-orange-500"
-
-                }`}
-
-              />
-
-              <span className={post.isLiked ? "text-orange-500 font-bold" : ""}>
-
-                {post.likes}
-
-              </span>
-
-            </button>
-
-
-
-            {/* Comments Placeholder Counter */}
-
-            <div className="flex items-center gap-2 text-sm font-medium p-1 cursor-default">
-
-              <MessageCircle className="w-5 h-5" />
-
-              <span>{post.commentsCount}</span>
-
+            {/* Media Placeholder Element */}
+            <div className="w-full h-72 bg-slate-50 dark:bg-slate-800/50 rounded-xl mb-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-800 transition-colors">
+              <div className="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500">
+                <span className="text-2xl">📷</span>
+                <span className="text-xs font-medium tracking-wide">Media Preview</span>
+              </div>
             </div>
 
+            {/* Dynamic Interactive Action Buttons */}
+            <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3 text-slate-500 dark:text-slate-400">
+              {/* Like Button Trigger */}
+              <button
+                onClick={() => handleLikeToggle(post.id, post.isLiked)}
+                className="flex items-center gap-2 text-sm font-medium transition-colors p-1 group"
+              >
+                <Heart
+                  className={`w-5 h-5 transition-transform group-active:scale-125 ${
+                    post.isLiked
+                      ? "fill-orange-500 text-orange-500"
+                      : "hover:text-orange-500"
+                  }`}
+                />
+                <span className={post.isLiked ? "text-orange-500 font-bold" : ""}>
+                  {post.likes}
+                </span>
+              </button>
 
+              {/* Comments Counter */}
+              <div className="flex items-center gap-2 text-sm font-medium p-1 cursor-default">
+                <MessageCircle className="w-5 h-5" />
+                <span>{post.commentsCount ?? post.comments ?? 0}</span>
+              </div>
 
-            {/* Save Button Trigger */}
+              {/* Save Button Trigger */}
+              <button
+                onClick={() => handleSaveToggle(post.id, post.isSaved)}
+                className="flex items-center gap-2 text-sm font-medium transition-colors p-1 group"
+              >
+                <Bookmark
+                  className={`w-5 h-5 transition-transform group-active:scale-125 ${
+                    post.isSaved
+                      ? "fill-purple-600 text-purple-600"
+                      : "hover:text-purple-600"
+                  }`}
+                />
+                <span className={post.isSaved ? "text-purple-600 font-bold" : ""}>
+                  {post.isSaved ? "Saved" : "Save"}
+                </span>
+              </button>
 
-            <button
-
-              onClick={() => handleSave(post.id)}
-
-              className="flex items-center gap-2 text-sm font-medium transition-colors p-1 group"
-
-            >
-
-              <Bookmark
-
-                className={`w-5 h-5 transition-transform group-active:scale-125 ${
-
-                  post.isSaved
-
-                    ? "fill-purple-600 text-purple-600"
-
-                    : "hover:text-purple-600"
-
-                }`}
-
-              />
-
-              <span className={post.isSaved ? "text-purple-600 font-bold" : ""}>
-
-                {post.isSaved ? "Saved" : "Save"}
-
-              </span>
-
-            </button>
-
-
-
-            {/* Share Alert Trigger */}
-
-            <button
-
-              onClick={() => handleShare(post.username)}
-
-              className="flex items-center gap-2 text-sm font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors p-1"
-
-            >
-
-              <Share2 className="w-5 h-5" />
-
-              <span>Share</span>
-
-            </button>
-
+              {/* Share Trigger */}
+              <button
+                onClick={() => handleShare(post.username)}
+                className="flex items-center gap-2 text-sm font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors p-1"
+              >
+                <Share2 className="w-5 h-5" />
+                <span>Share</span>
+              </button>
+            </div>
           </div>
-
-        </div>
-
-      ))}
-
+        ))
+      )}
     </div>
-
   );
-
 }
