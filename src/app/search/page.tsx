@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { mockUsers } from "../../data/users";
-import SearchInput from "@/components/SearchInput";
 import Card from "@/components/Card";
 import { User, ChevronRight } from "lucide-react";
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  // Read query directly from the URL address bar
+  const searchQuery = searchParams.get("q") || "";
 
-  // Real-time filtering based on username or display name
+  // Real-time filtering based on URL parameter
   const filteredUsers = mockUsers.filter(
     (user) =>
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -22,30 +23,24 @@ export default function SearchPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">
-          Search
+          Search Results
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Find and discover creators
-        </p>
+        {searchQuery && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Showing results for "{searchQuery}"
+          </p>
+        )}
       </div>
 
-      {/* Reusable Search Input Component */}
-      <SearchInput 
-        value={searchQuery} 
-        onChange={setSearchQuery} 
-        placeholder="Search by name or @username..."
-      />
-
-      {/* Filtered User Results Grid/Stack */}
+      {/* Filtered User Results Stack */}
       {filteredUsers.length > 0 ? (
         <div className="space-y-3">
           {filteredUsers.map((user) => (
-            <Link key={user.id} href={`/profile`}>
+            <Link key={user.id} href={`/profile/${user.username}`}>
               <div className="block cursor-pointer transform active:scale-[0.99] transition-transform mb-3">
                 <Card>
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-4">
-                      {/* User Profile Avatar Frame */}
                       <img
                         src={user.avatarUrl}
                         alt={user.name}
@@ -63,8 +58,6 @@ export default function SearchPage() {
                         </p>
                       </div>
                     </div>
-                    
-                    {/* Visual Indicator showing row is clickable/navigable */}
                     <ChevronRight className="w-5 h-5 text-slate-400" />
                   </div>
                 </Card>
@@ -73,8 +66,7 @@ export default function SearchPage() {
           ))}
         </div>
       ) : (
-        /* Meaningful Empty State required by PDF */
-        <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 p-6">
+        <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 p-6 w-full">
           <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
             <User className="w-6 h-6 text-slate-400" />
           </div>
