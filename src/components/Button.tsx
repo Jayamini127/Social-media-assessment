@@ -14,10 +14,10 @@ export default function Button({
 px-4
 py-2
 rounded-xl
-bg-purple-600
-hover:bg-purple-700
+bg-[var(--primary)]
+hover:bg-[var(--primary-hover)]
 transition
-text-white
+text-[var(--primary-foreground)]
 font-medium
 "
     >
