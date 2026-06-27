@@ -16,9 +16,9 @@ export const mockNotifications: NotificationItem[] = [
     id: "notif_1",
     type: "like",
     user: {
-      name: "Chloe Chen",
-      username: "design_bunny",
-      avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      name: "Emma Wilson",
+      username: "emma_w",
+      avatarUrl: "/avatar2.jpg",
     },
     details: "liked your post \"Working on a minimal interface kit...\"",
     timestamp: "2m ago",
@@ -30,7 +30,7 @@ export const mockNotifications: NotificationItem[] = [
     user: {
       name: "Marcus Vance",
       username: "marcus_dev",
-      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+      avatarUrl: "avatar3.webp",
     },
     details: "commented: \"This layout implementation is incredibly clean! 🔥\"",
     timestamp: "15m ago",
@@ -42,7 +42,7 @@ export const mockNotifications: NotificationItem[] = [
     user: {
       name: "Sarah Jenkins",
       username: "sarah_j",
-      avatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+      avatarUrl: "avatar4.jpg",
     },
     details: "started following you",
     timestamp: "2h ago",
@@ -52,9 +52,9 @@ export const mockNotifications: NotificationItem[] = [
     id: "notif_4",
     type: "mention",
     user: {
-      name: "Chloe Chen",
-      username: "design_bunny",
-      avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      name: "Emma Wilson",
+      username: "emma_w",
+      avatarUrl: "/avatar2.jpg",
     },
     details: "mentioned you in a caption: \"Check out @alex_dev dashboard setup!\"",
     timestamp: "1d ago",
