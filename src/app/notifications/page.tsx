@@ -18,6 +18,7 @@ export default function NotificationsPage() {
 
   const filters = ["All", "Likes", "Comments", "Follows", "Mentions"];
 
+  // Filter notifications based on category selected by user
   const filteredNotifications = notifications.filter((notif) => {
     if (activeFilter === "All") return true;
     if (activeFilter === "Likes") return notif.type === "like";
@@ -27,6 +28,7 @@ export default function NotificationsPage() {
     return true;
   });
 
+  // Updates local state to reflect read/unread status
   const markAsRead = (id: string) => {
     setNotifications((prev) =>
       prev.map((notif) => (notif.id === id ? { ...notif, isRead: true } : notif))
@@ -42,6 +44,7 @@ export default function NotificationsPage() {
     );
   };
 
+  // Maps notification types to appropriate Lucide icons and colors
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case "like":
@@ -119,7 +122,7 @@ export default function NotificationsPage() {
             <div 
               key={notif.id}
               onClick={() => markAsRead(notif.id)}
-              /* ✨ FIXED: Removed global container style opacity. Added a dynamic container class hierarchy */
+              
               className={`w-full text-left transition-all duration-200 rounded-2xl overflow-hidden ${
                 !notif.isRead 
                   ? "ring-1 ring-purple-500/30 dark:ring-purple-500/20 shadow-md shadow-purple-500/[0.04]" 
@@ -127,7 +130,7 @@ export default function NotificationsPage() {
               }`}
             >
               <Card>
-                {/* ✨ ENHANCEMENT: Optional Left purple unread indicator glow strip */}
+                
                 {!notif.isRead && (
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-600 rounded-l-2xl" />
                 )}
@@ -143,7 +146,7 @@ export default function NotificationsPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm leading-snug">
-                      {/* ✨ FIXED: Unread names pop cleanly; read names drop to a smooth readable slate */}
+                     
                       <span className={`font-bold mr-1 ${
                         notif.isRead 
                           ? "text-slate-700 dark:text-slate-300" 
@@ -154,7 +157,7 @@ export default function NotificationsPage() {
                       <span className="text-slate-400 dark:text-slate-500 text-xs">@{notif.user.username}</span>
                     </p>
                     
-                    {/* ✨ FIXED: Restructured description color matching standard to keep read items fully legible */}
+                   
                     <p className={`text-sm mt-0.5 break-words ${
                       notif.isRead 
                         ? "text-slate-500 dark:text-slate-400" 
@@ -168,7 +171,7 @@ export default function NotificationsPage() {
                     </span>
                   </div>
 
-                  {/* Right Interactive Unread Indicator Dot */}
+                  
                   {!notif.isRead && (
                     <div className="absolute top-1/2 right-1 -translate-y-1/2 flex-shrink-0">
                       <div className="w-2 h-2 bg-purple-500 rounded-full shadow-sm shadow-purple-500/50" />

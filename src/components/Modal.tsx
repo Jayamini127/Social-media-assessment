@@ -11,7 +11,7 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  // Prevent background scrolling when modal is open
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -25,7 +25,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      {/* Modal Box */}
+      
       <div className="bg-[var(--surface-card)] border border-[var(--border)] w-full max-w-sm rounded-2xl shadow-xl overflow-hidden transform transition-all p-5 space-y-4">
         
         {/* Modal Header */}

@@ -49,7 +49,7 @@ export default function Navbar() {
     if (savedTheme === "light") setIsDarkMode(false);
   }, []);
 
-  // Safe window handler closing dropdown components on body clicks
+  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
@@ -74,7 +74,7 @@ export default function Navbar() {
   const handleLogoutConfirm = () => {
     setIsLogoutModalOpen(false);
     setIsProfileOpen(false);
-    // Adjust route path if your signup/login page lives elsewhere (e.g., "/login")
+   
     router.push("/"); 
   };
 
@@ -249,7 +249,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Embedded Action Confirmation Modal Overlay */}
+      
       <Modal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}

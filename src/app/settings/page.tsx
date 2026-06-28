@@ -32,7 +32,7 @@ export default function SettingsPage() {
   const [isLogoutAction, setIsLogoutAction] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("English (US)");
 
-  // --- 2. Updated Handlers with Toast Messages ---
+  // Handlers with Toast Messages 
 
   const togglePrivate = () => {
     setIsPrivate(!isPrivate);
@@ -55,7 +55,7 @@ export default function SettingsPage() {
     toast.success(`Language changed to ${lang}`);
   };
 
-  // --- End of Handlers ---
+  // 
 
   const openModalFeature = (title: string, message: string, isLogout = false) => {
     setModalTitle(title);

@@ -6,22 +6,18 @@ import Card from "@/components/Card";
 import { Send, MessageSquare, Circle, ChevronLeft } from "lucide-react";
 
 export default function MessagesPage() {
-  // Main reactive state array managing chat threads locally
+ 
   const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
-  
-  // FIXED ISSUE 1: Default to empty string so it doesn't automatically open Emma's chat ("chat_1") every single time
+   
   const [activeChatId, setActiveChatId] = useState<string>("");
   
-  // Input tracking state field for current keystrokes
   const [inputMessage, setInputMessage] = useState("");
 
-  // Loading state tracking variable for skeleton animation triggers
   const [isLoading, setIsLoading] = useState(true);
 
-  // Reference hooks to automatically scroll the chat container smoothly
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Simulate an asset network loading timeline safely on initial paint
+  // Simulate network latency for skeleton loader display
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
@@ -39,7 +35,7 @@ export default function MessagesPage() {
     }
   }, [activeChat?.messages, isLoading]);
 
-  // FIXED ISSUE 2: Automatically clear unread counts when activeChatId changes (handles initial mounts safely)
+  // Mark messages as read when a chat is opened
   useEffect(() => {
     if (activeChatId) {
       setConversations((prev) =>
@@ -48,7 +44,7 @@ export default function MessagesPage() {
     }
   }, [activeChatId]);
 
-  // Clears out target unread badge notifications immediately upon activating a thread selection trigger
+  // Clears out target unread badge notifications immediately 
   const handleSelectChat = (id: string) => {
     setActiveChatId(id);
   };
@@ -65,12 +61,13 @@ export default function MessagesPage() {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
+    // Update conversation state with new message
     setConversations((prev) =>
       prev.map((chat) => {
         if (chat.id === activeChatId) {
           return {
             ...chat,
-            // FIXED ISSUE 3: Retain existing fields explicitly (like chat.user) so the header row profile metadata does not disappear!
+            
             unreadCount: 0, 
             lastMessage: newMsg.text,
             messages: [...chat.messages, newMsg],
@@ -87,7 +84,7 @@ export default function MessagesPage() {
     <div className="max-w-5xl mx-auto h-[calc(100vh-140px)] min-h-[500px] py-4 px-4">
       <div className="grid grid-cols-1 md:grid-cols-12 h-full bg-[var(--surface-card)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
         
-        {/* 1. LEFT COLUMN SIDEBAR: CONVERSATION THREAD INDEX SELECTOR LIST */}
+       {/* Sidebar: Conversation List */}
         <div className={`col-span-1 md:col-span-4 border-r border-[var(--border)] flex flex-col ${activeChatId ? "hidden md:flex" : "flex"}`}>
           <div className="p-4 border-b border-[var(--border)]">
             <h1 className="text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
@@ -98,7 +95,8 @@ export default function MessagesPage() {
 
           <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)]">
             {isLoading ? (
-              /* Simulated List Skeletons syncing perfectly to original container padding lines */
+                
+              // Loading skeletons
               [1, 2, 3, 4].map((idx) => (
                 <div key={idx} className="p-4 flex items-center gap-3 animate-pulse">
                   <div className="w-12 h-12 rounded-full bg-[var(--muted-bg)] flex-shrink-0" />
@@ -154,7 +152,7 @@ export default function MessagesPage() {
             </div>
           ) : activeChat ? (
             <>
-              {/* Active Chat Window Top Header Bar — fixed, never scrolls */}
+              {/* Active Chat Window Top Header Bar  */}
               <div className="flex-shrink-0 p-4 bg-[var(--surface-card)] border-b border-[var(--border)] flex items-center justify-between shadow-sm z-10">
                 <div className="flex items-center gap-3">
                   <button 

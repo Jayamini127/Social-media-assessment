@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { mockUsers } from "../../data/users";
-import { usePosts } from "@/hooks/usePosts"; // Linked to shared sync hooks
+import { usePosts } from "@/hooks/usePosts"; 
 import TabSwitcher from "@/components/TabSwitcher";
 import Card from "@/components/Card";
 import SkeletonLoader from "@/components/SkeletonLoader";
@@ -47,7 +47,7 @@ export default function ProfilePage() {
     }
   });
 
-  // ✅ Helper function to dynamically enforce correct avatars for both Sophia and Emma on all tabs
+  
   const getCleanAvatar = (post: any) => {
     if (post.username === "sophi_brown") return currentUser.avatarUrl;
     if (post.username === "emma_w") return "/avatar2.jpg";
@@ -126,7 +126,7 @@ export default function ProfilePage() {
               {/* Top Row Feed Header Details Block */}
               <div className="flex items-center gap-3 mb-3">
                 <img
-                  // ✅ FIXED: Safely overrides old avatar references layout-wide for any active view tab items
+                 
                   src={getCleanAvatar(post)}
                   alt={post.username}
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/10"

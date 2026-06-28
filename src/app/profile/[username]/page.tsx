@@ -13,7 +13,7 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ params }: ProfilePageProps) {
-  // Safe unpacking of URL params following Next.js standards
+  
   const resolvedParams = use(params);
 
   // 👤 The logged-in session user details
@@ -26,14 +26,14 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     (u) => u.username.toLowerCase() === resolvedParams.username.toLowerCase()
   ) || mockUsers[0];
 
-  // ✅ PRIVACY CHECK: Is the logged-in user viewing their own profile page?
+  //  CHECK Is the logged-in user viewing their own profile page?
   const isOwner = loggedInUser.username.toLowerCase() === currentUser.username.toLowerCase();
 
   const [posts, setPosts] = useState(initialPosts);
   const [activeTab, setActiveTab] = useState("Posts");
   const [isTabLoading, setIsTabLoading] = useState(false);
 
-  // ✅ DYNAMIC TABS: Hide "Saved" tab unless you are looking at your own profile
+  // Hide "Saved" tab unless you are looking at your own profile
   const tabs = isOwner ? ["Posts", "Saved"] : ["Posts"];
 
   // Page initialization loading state variable
@@ -60,7 +60,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     }
   }, [activeTab, isLoading]);
 
-  // ✅ PRIVACY FILTERING
+  //  PRIVACY FILTERING
   const displayedPosts = posts.filter((post) => {
     if (activeTab === "Posts") {
       return post.username.toLowerCase() === currentUser.username.toLowerCase();
