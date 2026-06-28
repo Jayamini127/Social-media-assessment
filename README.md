@@ -4,13 +4,13 @@ A modern, responsive social media user interface built with **Next.js App Router
 
 ---
 
-# Project Overview
+## Project Overview
 
-SocialHub is a TikTok-inspired social media application that demonstrates modern frontend development practices using the Next.js App Router.
+SocialHub is a responsive social media application built with Next.js, TypeScript, and Tailwind CSS as part of a Frontend Developer technical assessment. Inspired by modern social platforms, it demonstrates frontend development best practices using the Next.js App Router, reusable components, responsive layouts, and interactive user interfaces.
 
-The application includes multiple pages such as a Home Feed, Search, Profile, Notifications, Messages, and Settings. It uses mock data to simulate user interactions and provides a clean, responsive user experience across desktop, tablet, and mobile devices.
+The application includes multiple pages such as Home Feed, Search, Profile, Notifications, Messages, and Settings. It uses mock data to simulate user interactions and provides a consistent experience across desktop, tablet, and mobile devices.
 
-No backend services or API integrations are used, as the assessment focuses entirely on frontend implementation.
+This project focuses entirely on frontend implementation, with no backend services or API integrations.
 
 ---
 
@@ -37,6 +37,7 @@ No backend services or API integrations are used, as the assessment focuses enti
 ### Notifications
 - Display mock notifications
 - Mark notifications as read
+- Mock notifications with filter tabs (All, Likes, Comments, Follows, Mentions)
 
 
 ### Messages
@@ -65,7 +66,7 @@ No backend services or API integrations are used, as the assessment focuses enti
 
 # Technology Stack
 
-- Next.js 16 (App Router)
+- Next.js  (App Router)
 - React
 - TypeScript
 - Tailwind CSS
@@ -75,33 +76,35 @@ No backend services or API integrations are used, as the assessment focuses enti
 
 # Installation Instructions
 
-Clone the repository:
+### Prerequisites
+
+Before getting started, ensure you have the following installed:
+
+- Node.js (v18 or later)
+- npm (v9 or later)
+
+### Installation
+
+1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Jayamini127/social-media-assessment.git
 ```
 
-Navigate to the project directory:
+2. Navigate to the project directory
 
 ```bash
 cd social-media-assessment
 ```
 
-Install project dependencies:
+3. Install the project dependencies
 
 ```bash
 npm install
 ```
-
 ---
 
 # Run Instructions
-
-Install dependencies:
-
-```bash
-npm install
-```
 
 Start the development server:
 
@@ -115,21 +118,19 @@ Open your browser and visit:
 http://localhost:3000
 ```
 
-To create a production build (optional):
 
-```bash
-npm run build
-```
+---
 # Design Decisions
 
-The application was designed with simplicity, consistency, and reusability in mind.
+The application was designed with a strong focus on simplicity, consistency, responsiveness, and component reusability.
 
-- Built using the Next.js App Router to follow modern development practices.
-- Reusable components such as Navbar, Card, Theme Toggle, Search Input, Tab Switcher, Button, Avatar, and Modal are used throughout the application.
-- Mock data is used to simulate user interactions without requiring a backend.
-- Skeleton loaders and meaningful empty states improve the overall user experience.
-- A Purple and Orange color palette was selected to provide a modern and accessible interface while supporting both Light and Dark themes.
-- Responsive layouts ensure a consistent experience across desktop, tablet, and mobile devices.
+- **Next.js App Router** was used to follow modern React development practices and provide a clean, scalable project structure.
+- **Reusable components** such as the Navbar, Card, Button, Search Input, Modal, Tab Switcher, Avatar, and Skeleton Loader were created to reduce code duplication and maintain a consistent user interface.
+- **Mock data** is used throughout the application to simulate real-world user interactions without requiring a backend or external APIs, keeping the project focused on frontend development.
+- **Responsive layouts** were implemented to ensure a seamless experience across mobile, tablet, and desktop devices.
+- **Light and Dark themes** were included to improve accessibility and user experience, using a consistent Purple and Orange design system throughout the application.
+- **Loading skeletons and empty states** were added to provide meaningful visual feedback during loading and when no data is available, creating a more polished user experience.
+- **Interactive UI elements**, including like, save, search, theme switching, notifications, and messaging, were implemented to demonstrate frontend state management and user interaction.
 
 ---
 
@@ -137,23 +138,23 @@ The application was designed with simplicity, consistency, and reusability in mi
 
 Given more development time, the following enhancements could be added:
 
-- Backend integration using REST APIs
-- User authentication and authorization
-- Persistent user data with a database
-- Real-time messaging
-- Video upload and playback
-- Infinite scrolling
-- Push notifications
-- User profile editing
-- Image uploads
-- Search history and suggestions
-- Internationalization (Multi-language support)
-- Unit and integration testing
-- Performance optimization
-- Accessibility improvements
+- Integrate a backend using REST APIs to replace mock data.
+- Implement user authentication and authorization.
+- Store user data and user interactions in a database.
+- Support image and video uploads with media playback.
+- Enable profile editing and account management.
+- Improve search with history and suggestions.
+- Optimize application performance and loading efficiency.
 
 ---
 
 ## Author
 
-Developed by **Jayamini Karunarathna**
+Developed by **Jayamini Pabasara Karunarathna**
+
+**IT Undergraduate**  
+Sri Lanka Institute of Information Technology (SLIIT)
+
+**GitHub:** https://github.com/Jayamini127
+
+**LinkedIn:** https://www.linkedin.com/in/jayamini-karunarathna/
