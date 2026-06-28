@@ -2,11 +2,12 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 import { mockUsers } from "../../data/users";
 import Card from "@/components/Card";
 import { User, ChevronRight } from "lucide-react";
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   // Read query directly from the URL address bar
   const searchQuery = searchParams.get("q") || "";
@@ -79,5 +80,13 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense>
+      <SearchContent />
+    </Suspense>
   );
 }

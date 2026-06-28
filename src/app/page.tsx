@@ -68,7 +68,7 @@ export default function Home() {
             </p>
 
             {/* Media Placeholder Element */}
-            <div className="w-full h-72 bg-slate-50 dark:bg-slate-800/50 rounded-xl mb-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-800 transition-colors">
+            <div className="w-full h-44 bg-slate-50 dark:bg-slate-800/50 rounded-xl mb-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-800 transition-colors">
               <div className="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500">
                 <span className="text-2xl">📷</span>
                 <span className="text-xs font-medium tracking-wide">Media Preview</span>

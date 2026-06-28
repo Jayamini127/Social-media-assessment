@@ -85,26 +85,26 @@ export default function MessagesPage() {
 
   return (
     <div className="max-w-5xl mx-auto h-[calc(100vh-140px)] min-h-[500px] py-4 px-4">
-      <div className="grid grid-cols-1 md:grid-cols-12 h-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-12 h-full bg-[var(--surface-card)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
         
         {/* 1. LEFT COLUMN SIDEBAR: CONVERSATION THREAD INDEX SELECTOR LIST */}
-        <div className={`col-span-1 md:col-span-4 border-r border-slate-200 dark:border-slate-800 flex flex-col ${activeChatId ? "hidden md:flex" : "flex"}`}>
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800/60">
-            <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-purple-500" />
+        <div className={`col-span-1 md:col-span-4 border-r border-[var(--border)] flex flex-col ${activeChatId ? "hidden md:flex" : "flex"}`}>
+          <div className="p-4 border-b border-[var(--border)]">
+            <h1 className="text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-[var(--primary)]" />
               Messages
             </h1>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-50 dark:divide-slate-800/40">
+          <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)]">
             {isLoading ? (
               /* Simulated List Skeletons syncing perfectly to original container padding lines */
               [1, 2, 3, 4].map((idx) => (
                 <div key={idx} className="p-4 flex items-center gap-3 animate-pulse">
-                  <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex-shrink-0" />
+                  <div className="w-12 h-12 rounded-full bg-[var(--muted-bg)] flex-shrink-0" />
                   <div className="flex-1 space-y-2 min-w-0">
-                    <div className="h-3.5 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
-                    <div className="h-3 w-5/6 bg-slate-200 dark:bg-slate-800 rounded" />
+                    <div className="h-3.5 w-24 bg-[var(--muted-bg)] rounded" />
+                    <div className="h-3 w-5/6 bg-[var(--muted-bg)] rounded" />
                   </div>
                 </div>
               ))
@@ -117,8 +117,8 @@ export default function MessagesPage() {
                     onClick={() => handleSelectChat(chat.id)}
                     className={`w-full text-left p-4 flex items-center gap-3 transition-colors ${
                       isSelected 
-                        ? "bg-purple-500/10 dark:bg-purple-500/5 border-l-4 border-purple-500" 
-                        : "hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-transparent"
+                        ? "bg-[var(--primary-light)] border-l-4 border-[var(--primary)]" 
+                        : "hover:bg-[var(--muted-bg)] border-l-4 border-transparent"
                     }`}
                   >
                     <div className="relative flex-shrink-0">
@@ -130,12 +130,12 @@ export default function MessagesPage() {
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{chat.user.name}</span>
+                        <span className="font-semibold text-sm text-[var(--foreground)] truncate">{chat.user.name}</span>
                         {chat.unreadCount > 0 && (
-                          <span className="bg-purple-600 text-white text-[10px] px-1.5 py-0.5 font-bold rounded-full">{chat.unreadCount}</span>
+                          <span className="bg-[var(--primary)] text-white text-[10px] px-1.5 py-0.5 font-bold rounded-full">{chat.unreadCount}</span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-400 truncate mt-0.5">{chat.lastMessage}</p>
+                      <p className="text-xs text-[var(--muted)] truncate mt-0.5">{chat.lastMessage}</p>
                     </div>
                   </button>
                 );
@@ -145,36 +145,36 @@ export default function MessagesPage() {
         </div>
 
         {/* 2. RIGHT COLUMN BOX: ACTIVE LIVE CHAT DIALOG FRAME VIEW */}
-        <div className={`col-span-1 md:col-span-8 flex flex-col h-full bg-slate-50/50 dark:bg-slate-950/20 ${!activeChatId ? "hidden md:flex" : "flex"}`}>
+        <div className={`col-span-1 md:col-span-8 flex flex-col h-full min-h-0 bg-[var(--muted-bg)]/30 ${!activeChatId ? "hidden md:flex" : "flex"}`}>
           {isLoading ? (
             /* Main Content Window Panel Dummy Placeholder Box */
             <div className="flex-1 flex flex-col p-4 space-y-4 animate-pulse">
-              <div className="h-14 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl" />
-              <div className="flex-1 bg-white/40 dark:bg-slate-900/40 rounded-xl" />
+              <div className="h-14 w-full bg-[var(--surface-card)] border border-[var(--border)] rounded-xl" />
+              <div className="flex-1 bg-[var(--surface-card)]/40 rounded-xl" />
             </div>
           ) : activeChat ? (
             <>
-              {/* Active Chat Window Top Header Bar */}
-              <div className="p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm z-10">
+              {/* Active Chat Window Top Header Bar — fixed, never scrolls */}
+              <div className="flex-shrink-0 p-4 bg-[var(--surface-card)] border-b border-[var(--border)] flex items-center justify-between shadow-sm z-10">
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => setActiveChatId("")} 
-                    className="md:hidden p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500"
+                    className="md:hidden p-1 rounded-lg hover:bg-[var(--muted-bg)] text-[var(--muted)]"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <div className="relative">
                     <img src={activeChat.user.avatarUrl} alt={activeChat.user.name} className="w-10 h-10 rounded-full object-cover" />
                     {activeChat.user.isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900" />
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--surface-card)]" />
                     )}
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">{activeChat.user.name}</h2>
+                    <h2 className="text-sm font-bold text-[var(--foreground)]">{activeChat.user.name}</h2>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] text-slate-400">@{activeChat.user.username}</span>
-                      <span className="text-[10px] text-slate-300 dark:text-slate-700">•</span>
-                      <span className={`text-[11px] font-medium ${activeChat.user.isOnline ? "text-green-500" : "text-slate-400"}`}>
+                      <span className="text-[11px] text-[var(--muted)]">@{activeChat.user.username}</span>
+                      <span className="text-[10px] text-[var(--muted)]">•</span>
+                      <span className={`text-[11px] font-medium ${activeChat.user.isOnline ? "text-green-500" : "text-[var(--muted)]"}`}>
                         {activeChat.user.isOnline ? "Online" : "Offline"}
                       </span>
                     </div>
@@ -182,19 +182,19 @@ export default function MessagesPage() {
                 </div>
               </div>
 
-              {/* Scrollable Message History Body Frame Area */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {/* Scrollable Message History Body Frame Area — only this scrolls */}
+              <div className="flex-1 overflow-y-auto min-h-0 p-4 space-y-3">
                 {activeChat.messages.map((msg) => {
                   const isMe = msg.senderId === "1";
                   return (
                     <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                       <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                         isMe 
-                          ? "bg-purple-600 text-white rounded-br-none" 
-                          : "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-bl-none border border-slate-100 dark:border-slate-800"
+                          ? "bg-[var(--primary)] text-white rounded-br-none" 
+                          : "bg-[var(--surface-card)] text-[var(--foreground)] rounded-bl-none border border-[var(--border)]"
                       }`}>
                         <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                        <span className={`block text-[10px] text-right mt-1 ${isMe ? "text-purple-200" : "text-slate-400"}`}>
+                        <span className={`block text-[10px] text-right mt-1 ${isMe ? "text-white/60" : "text-[var(--muted)]"}`}>
                           {msg.timestamp}
                         </span>
                       </div>
@@ -204,20 +204,20 @@ export default function MessagesPage() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Real-time Message Input Panel Bar with Padding Separator */}
-              <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+              {/* Real-time Message Input Panel Bar with Padding Separator — fixed at bottom */}
+              <div className="flex-shrink-0 p-4 bg-[var(--surface-card)] border-t border-[var(--border)]">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
                   <input
                     type="text"
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     placeholder="Type message..."
-                    className="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-slate-900 dark:text-slate-100 placeholder-slate-400"
+                    className="flex-1 px-4 py-2.5 bg-[var(--muted-bg)] border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 text-[var(--foreground)] placeholder:text-[var(--muted)]"
                   />
                   <button
                     type="submit"
                     disabled={!inputMessage.trim()}
-                    className="p-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white rounded-xl transition-all active:scale-95 flex items-center justify-center shadow-md shadow-purple-500/10"
+                    className="p-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-40 text-white rounded-xl transition-all active:scale-95 flex items-center justify-center shadow-md shadow-[var(--primary)]/10"
                   >
                     <Send className="w-5 h-5" />
                   </button>
@@ -227,11 +227,11 @@ export default function MessagesPage() {
           ) : (
             /* Blank Context Fallback Screen */
             <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-              <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
-                <MessageSquare className="w-8 h-8 text-slate-400" />
+              <div className="w-16 h-16 rounded-full bg-[var(--muted-bg)] flex items-center justify-center mb-3">
+                <MessageSquare className="w-8 h-8 text-[var(--muted)]" />
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100">Your Conversations</h3>
-              <p className="text-sm text-slate-400 max-w-xs mt-1">Select an active context channel list thread sidebar item to begin sending responsive messaging content asset strings instantly.</p>
+              <h3 className="font-bold text-[var(--foreground)]">Your Conversations</h3>
+              <p className="text-sm text-[var(--muted)] max-w-xs mt-1">Select an active context channel list thread sidebar item to begin sending responsive messaging content asset strings instantly.</p>
             </div>
           )}
         </div>
