@@ -1,10 +1,10 @@
-# SocialHub
+# 📱 SocialHub
 
 A modern, responsive social media user interface built with **Next.js App Router**, **TypeScript**, and **Tailwind CSS**. This project was developed as part of a Frontend Developer technical assessment and focuses on frontend architecture, reusable components, responsive design, and interactive user interfaces.
 
 ---
 
-## Project Overview
+## 📖 Project Overview
 
 SocialHub is a responsive social media application built with Next.js, TypeScript, and Tailwind CSS as part of a Frontend Developer technical assessment. Inspired by modern social platforms, it demonstrates frontend development best practices using the Next.js App Router, reusable components, responsive layouts, and interactive user interfaces.
 
@@ -14,7 +14,7 @@ This project focuses entirely on frontend implementation, with no backend servic
 
 ---
 
-# Features Implemented
+## ✨ Features Implemented
 
 ### Home Feed
 - Display user avatar, username, and post captions
@@ -64,7 +64,7 @@ This project focuses entirely on frontend implementation, with no backend servic
 
 ---
 
-# Technology Stack
+## 🛠 Technology Stack
 
 - Next.js  (App Router)
 - React
@@ -74,7 +74,7 @@ This project focuses entirely on frontend implementation, with no backend servic
 
 ---
 
-# Installation Instructions
+## 🚀 Installation Instructions
 
 ### Prerequisites
 
@@ -104,7 +104,7 @@ npm install
 ```
 ---
 
-# Run Instructions
+## ▶️ Run Instructions
 
 Start the development server:
 
@@ -120,7 +120,7 @@ http://localhost:3000
 
 
 ---
-# Design Decisions
+## 🎨 Design Decisions
 
 The application was designed with a strong focus on simplicity, consistency, responsiveness, and component reusability.
 
@@ -134,7 +134,7 @@ The application was designed with a strong focus on simplicity, consistency, res
 
 ---
 
-# Future Improvements
+## 🔮 Future Improvements
 
 Given more development time, the following enhancements could be added:
 
@@ -148,7 +148,7 @@ Given more development time, the following enhancements could be added:
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 Developed by **Jayamini Pabasara Karunarathna**
 
