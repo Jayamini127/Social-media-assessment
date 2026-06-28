@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { mockUsers } from "@/data/users";
-import Modal from "@/components/Modal"; // Double check this path matches your folder structure
+import Modal from "@/components/Modal";
 import {
   Home,
   Search,
@@ -13,7 +13,6 @@ import {
   Settings,
   Sun,
   Moon,
-  Clock,
   LogOut,
   User,
   ChevronDown,
@@ -32,7 +31,6 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  // Sync dark mode configuration settings
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDarkMode) {
@@ -49,7 +47,6 @@ export default function Navbar() {
     if (savedTheme === "light") setIsDarkMode(false);
   }, []);
 
-  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
@@ -74,11 +71,9 @@ export default function Navbar() {
   const handleLogoutConfirm = () => {
     setIsLogoutModalOpen(false);
     setIsProfileOpen(false);
-   
     router.push("/"); 
   };
 
-  // Filter logic checking username or display name matches
   const suggestions = mockUsers.filter(
     (u) =>
       u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -94,10 +89,9 @@ export default function Navbar() {
   return (
     <>
       <nav className="bg-[var(--surface-card)] border-b border-[var(--border)] sticky top-0 z-50 transition-colors duration-200">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
           
-          {/* Brand Logo & Wide Search Form Field */}
-          <div className="flex items-center gap-6 flex-1 max-w-xl">
+          <div className="flex items-center gap-6 flex-1">
             <Link
               href="/"
               className="font-extrabold text-xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-transparent bg-clip-text shrink-0 tracking-tight"
@@ -105,7 +99,8 @@ export default function Navbar() {
               SocialHub
             </Link>
 
-            <div className="relative w-full hidden md:block" ref={searchRef}>
+            {/* FIX: Removed 'hidden md:block' and added responsive width classes */}
+            <div className="relative w-full max-w-xl" ref={searchRef}>
               <form onSubmit={handleSearchSubmit} className="relative flex items-center">
                 <Search className="w-4 h-4 text-[var(--muted)] absolute left-3.5 pointer-events-none" />
                 <input
@@ -114,11 +109,11 @@ export default function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
-                  className="w-full pl-10 pr-4 py-2 text-sm bg-[var(--muted-bg)] text-[var(--foreground)] rounded-xl placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 transition-all border border-[var(--border)]"
+                  // Added 'w-8 sm:w-full' to ensure it shrinks to an icon on very small screens
+                  className="w-8 sm:w-full pl-10 pr-4 py-2 text-sm bg-[var(--muted-bg)] text-[var(--foreground)] rounded-xl placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 transition-all border border-[var(--border)] focus:w-full"
                 />
               </form>
 
-              {/* Enhanced Search Popover Layer */}
               {isSearchFocused && (
                 <div className="absolute top-full left-0 w-full mt-2 bg-[var(--surface-card)] border border-[var(--border)] shadow-2xl rounded-xl overflow-hidden p-2 z-50">
                   <div className="px-3 py-1.5 text-[11px] font-bold tracking-wider uppercase text-[var(--muted)]">
@@ -131,7 +126,7 @@ export default function Navbar() {
                         <button
                           key={user.id}
                           onMouseDown={() => {
-                            setSearchQuery(""); // Clears the navbar text input immediately on search selection
+                            setSearchQuery("");
                             setIsSearchFocused(false);
                             router.push(`/profile/${user.username}`);
                           }}
@@ -146,7 +141,6 @@ export default function Navbar() {
                       ))}
                     </div>
                   ) : (
-                    /* Clear Empty Feedback State Fix */
                     <div className="text-xs font-medium text-[var(--muted)] text-center py-6">
                       No results found for &quot;{searchQuery}&quot;
                     </div>
@@ -156,7 +150,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Navigation Action Hub Link Collection */}
           <div className="flex items-center gap-3">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -180,7 +173,6 @@ export default function Navbar() {
 
             <div className="h-4 w-px bg-[var(--border)] mx-1 hidden sm:block" />
 
-            {/* Account Settings Dropdown Control Menu */}
             <div className="relative" ref={profileDropdownRef}>
               <button
                 onClick={() => setIsProfileOpen((prev) => !prev)}
@@ -196,82 +188,39 @@ export default function Navbar() {
 
               {isProfileOpen && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-[var(--surface-card)] border border-[var(--border)] shadow-2xl rounded-xl overflow-hidden p-1 z-50">
-                  <Link
-                    href="/profile"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] rounded-lg transition-colors"
-                  >
-                    <User className="w-4 h-4 text-[var(--muted)]" />
-                    My Profile
+                  <Link href="/profile" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] rounded-lg transition-colors">
+                    <User className="w-4 h-4 text-[var(--muted)]" /> My Profile
                   </Link>
-
-                  <Link
-                    href="/settings"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4 text-[var(--muted)]" />
-                    Settings & Privacy
+                  <Link href="/settings" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] rounded-lg transition-colors">
+                    <Settings className="w-4 h-4 text-[var(--muted)]" /> Settings & Privacy
                   </Link>
-
-                  <Link
-                    href="/search"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] rounded-lg transition-colors md:hidden"
-                  >
-                    <Search className="w-4 h-4 text-[var(--muted)]" />
-                    Search
+                  <Link href="/search" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] rounded-lg transition-colors md:hidden">
+                    <Search className="w-4 h-4 text-[var(--muted)]" /> Search
                   </Link>
-
                   <div className="h-px bg-[var(--border)] my-1" />
-
-                  {/* Intercepts Logout redirection action directly with custom modal instead of dead page route */}
-                  <button
-                    onClick={() => setIsLogoutModalOpen(true)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--danger)] hover:bg-[var(--danger)]/10 rounded-lg text-left transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Log Out
+                  <button onClick={() => setIsLogoutModalOpen(true)} className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[var(--danger)] hover:bg-[var(--danger)]/10 rounded-lg text-left transition-colors">
+                    <LogOut className="w-4 h-4" /> Log Out
                   </button>
                 </div>
               )}
             </div>
 
-            {/* Layout Palette Modifier Controls */}
             <button
               onClick={() => setIsDarkMode((prev) => !prev)}
               className="p-2 rounded-xl text-[var(--muted)] hover:bg-[var(--muted-bg)] transition"
             >
               {isDarkMode ? <Sun className="w-4 h-4 text-[var(--accent)]" /> : <Moon className="w-4 h-4 text-[var(--primary)]" />}
             </button>
-
           </div>
         </div>
       </nav>
 
-      
-      <Modal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        title="Confirm Logout"
-      >
+      <Modal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} title="Confirm Logout">
         <div className="space-y-4">
-          <p className="text-[var(--muted)] text-xs leading-relaxed">
-            Are you sure you want to sign out? 
-          </p>
+          <p className="text-[var(--muted)] text-xs leading-relaxed">Are you sure you want to sign out?</p>
           <div className="flex items-center justify-end gap-2.5 pt-2">
-            <button
-              onClick={() => setIsLogoutModalOpen(false)}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[var(--foreground)] bg-[var(--muted-bg)] hover:bg-[var(--border)] transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleLogoutConfirm}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--danger)] text-white hover:opacity-90 transition-opacity shadow-lg"
-            >
-              Log Out
-            </button>
+            <button onClick={() => setIsLogoutModalOpen(false)} className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[var(--foreground)] bg-[var(--muted-bg)] hover:bg-[var(--border)] transition-colors">Cancel</button>
+            <button onClick={handleLogoutConfirm} className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--danger)] text-white hover:opacity-90 transition-opacity shadow-lg">Log Out</button>
           </div>
         </div>
       </Modal>
