@@ -88,7 +88,7 @@ Before getting started, ensure you have the following installed:
 1. Clone the repository
 
 ```bash
-git clone https://github.com/Jayamini127/social-media-assessment.git
+git clone https://github.com/Jayamini127/Social-media-assessment.git
 ```
 
 2. Navigate to the project directory
